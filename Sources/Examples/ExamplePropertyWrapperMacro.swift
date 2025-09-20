@@ -11,28 +11,28 @@ import Foundation
 @attached(accessor, names: named(get))
 public macro Example(
     _ arguments: Any...
-) = #externalMacro(module: "ExampleMacros", type: "ExamplePropertyWrapperMacro")
+) = #externalMacro(module: "ExampleMacros", type: "ExampleMacro")
 
 @attached(peer, names: arbitrary)
 @attached(accessor, names: named(get))
 public macro ExampleSettable(
     _ arguments: Any...
-) = #externalMacro(module: "ExampleMacros", type: "ExampleSettablePropertyWrapperMacro")
+) = #externalMacro(module: "ExampleMacros", type: "ExampleSettableMacro")
 
 @attached(peer, names: arbitrary)
 @attached(accessor, names: named(get))
 public macro ExampleWithProjected(
     _ arguments: Any...
-) = #externalMacro(module: "ExampleMacros", type: "ExampleWithProjectedPropertyWrapperMacro")
+) = #externalMacro(module: "ExampleMacros", type: "ExampleWithProjectedMacro")
 
 @attached(peer, names: arbitrary)
 @attached(accessor, names: named(get))
 public macro ExampleWithSettableProjected(
     _ arguments: Any...
-) = #externalMacro(module: "ExampleMacros", type: "ExampleWithSettableProjectedPropertyWrapperMacro")
+) = #externalMacro(module: "ExampleMacros", type: "ExampleWithSettableProjectedMacro")
 
 @attached(peer, names: arbitrary)
 @attached(accessor, names: named(get))
 public macro ExampleWithWrappedValue(
     _ arguments: Any...
-) = #externalMacro(module: "ExampleMacros", type: "ExampleWithWrappedValuePropertyWrapperMacro")
+) = #externalMacro(module: "ExampleMacros", type: "ExampleWithWrappedValueMacro")

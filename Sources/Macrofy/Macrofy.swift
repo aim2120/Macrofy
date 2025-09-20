@@ -7,7 +7,7 @@
 
 import Foundation
 
-@attached(peer, names: arbitrary)
+@attached(peer, names: suffixed(Macro))
 public macro macrofy(
     _ arguments: Any...
 ) = #externalMacro(module: "MacrofyMacro", type: "MacrofyMacro")

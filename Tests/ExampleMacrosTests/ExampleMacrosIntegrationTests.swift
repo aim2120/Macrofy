@@ -1,5 +1,5 @@
 //
-//  PropertyWrapperMacroIntegrationTests.swift
+//  ExampleMacrosIntegrationTests.swift
 //  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
@@ -13,7 +13,7 @@ import Examples
 import ExampleMacros
 
 @Suite
-struct PropertyWrapperMacroIntegrationTests {
+struct ExampleMacrosIntegrationTests {
     @Test func propertyWrapperExposedCorrectly() {
         let e1 = Example1()
         let e2 = Example2()

@@ -1,5 +1,5 @@
 //
-//  PropertyWrapperMacroTests.swift
+//  ExampleMacrosTests.swift
 //  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
@@ -15,12 +15,12 @@ import SwiftSyntaxMacrosTestSupport
 
 import ExampleMacros
 
-final class PropertyWrapperMacroTests: XCTestCase {
+final class ExampleMacrosTests: XCTestCase {
     let testMacros: [String: Macro.Type] = [
-        "Example": ExamplePropertyWrapperMacro.self,
-        "ExampleSettable": ExampleSettablePropertyWrapperMacro.self,
-        "ExampleWithProjected": ExampleWithProjectedPropertyWrapperMacro.self,
-        "ExampleWithSettableProjected": ExampleWithSettableProjectedPropertyWrapperMacro.self,
+        "Example": ExampleMacro.self,
+        "ExampleSettable": ExampleSettableMacro.self,
+        "ExampleWithProjected": ExampleWithProjectedMacro.self,
+        "ExampleWithSettableProjected": ExampleWithSettableProjectedMacro.self,
     ]
 
     func testExamplePropertyWrapperMacro() async throws {

@@ -13,10 +13,10 @@ import SwiftSyntaxMacros
 @main
 struct ExampleMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        ExamplePropertyWrapperMacro.self,
-        ExampleSettablePropertyWrapperMacro.self,
-        ExampleWithProjectedPropertyWrapperMacro.self,
-        ExampleWithSettableProjectedPropertyWrapperMacro.self,
-        ExampleWithWrappedValuePropertyWrapperMacro.self,
+        ExampleMacro.self,
+        ExampleSettableMacro.self,
+        ExampleWithProjectedMacro.self,
+        ExampleWithSettableProjectedMacro.self,
+        ExampleWithWrappedValueMacro.self,
     ]
 }
