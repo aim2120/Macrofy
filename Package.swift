@@ -28,6 +28,23 @@ let package = Package(
             ]
         ),
         .macro(
+            name: "MacrofyMacro",
+            dependencies: [
+                "PropertyWrapperMacro",
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftDiagnostics", package: "swift-syntax"),
+            ]
+        ),
+        .target(
+            name: "Macrofy",
+            dependencies: [
+                "MacrofyMacro",
+            ],
+        ),
+        .macro(
             name: "ExampleMacros",
             dependencies: [
                 "PropertyWrapperMacro",
@@ -42,6 +59,14 @@ let package = Package(
             name: "Examples",
             dependencies: [
                 "ExampleMacros",
+            ]
+        ),
+        .testTarget(
+            name: "MacrofyMacroTests",
+            dependencies: [
+                "Macrofy",
+                "MacrofyMacro",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
         .testTarget(
