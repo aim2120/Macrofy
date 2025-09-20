@@ -1,6 +1,6 @@
 //
 //  PropertyWrapperMacroTests.swift
-//  SwiftPropertyWrapperMacroConverter
+//  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
 //
@@ -13,8 +13,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 
-@_spi(ExampleMacros)
-import SwiftPropertyWrapperMacroConverterMacros
+import ExampleMacros
 
 final class PropertyWrapperMacroTests: XCTestCase {
     let testMacros: [String: Macro.Type] = [

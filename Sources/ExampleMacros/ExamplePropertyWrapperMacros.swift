@@ -1,22 +1,21 @@
 //
-//  ExamplePropertyWrapperMacro.swift
-//  SwiftPropertyWrapperMacroConverter
+//  ExamplePropertyWrapperMacros.swift
+//  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
 //
 
 import Foundation
+import PropertyWrapperMacro
 import SwiftSyntax
 import SwiftSyntaxMacros
 
 // MARK: Macros
 
-@_spi(ExampleMacros)
 public struct ExamplePropertyWrapperMacro: PropertyWrapperMacro {
     public typealias Config = DefaultPropertyWrapperMacroConfig
 }
 
-@_spi(ExampleMacros)
 public struct ExampleSettablePropertyWrapperMacro: PropertyWrapperMacro {
     public struct Config: PropertyWrapperMacroConfig {
         public init() {}
@@ -25,7 +24,6 @@ public struct ExampleSettablePropertyWrapperMacro: PropertyWrapperMacro {
     }
 }
 
-@_spi(ExampleMacros)
 public struct ExampleWithProjectedPropertyWrapperMacro: PropertyWrapperMacro {
     public struct Config: PropertyWrapperMacroConfig {
         public init() {}
@@ -35,7 +33,6 @@ public struct ExampleWithProjectedPropertyWrapperMacro: PropertyWrapperMacro {
     }
 }
 
-@_spi(ExampleMacros)
 public struct ExampleWithSettableProjectedPropertyWrapperMacro: PropertyWrapperMacro {
     public struct Config: PropertyWrapperMacroConfig {
         public init() {}
@@ -47,14 +44,12 @@ public struct ExampleWithSettableProjectedPropertyWrapperMacro: PropertyWrapperM
     }
 }
 
-@_spi(ExampleMacros)
 public struct ExampleWithWrappedValuePropertyWrapperMacro: PropertyWrapperMacro {
     public typealias Config = DefaultPropertyWrapperMacroConfig
 }
 
 // MARK: Property Wrappers
 
-@_spi(ExampleMacros)
 @propertyWrapper
 public struct Example<Value: Sendable>: Sendable {
     public init(_ wrappedValue: Value) {
@@ -64,7 +59,6 @@ public struct Example<Value: Sendable>: Sendable {
     public let wrappedValue: Value
 }
 
-@_spi(ExampleMacros)
 @propertyWrapper
 public final class ExampleSettable<Value: Sendable>: @unchecked Sendable {
     public init(_ wrappedValue: Value) {
@@ -74,7 +68,6 @@ public final class ExampleSettable<Value: Sendable>: @unchecked Sendable {
     public var wrappedValue: Value
 }
 
-@_spi(ExampleMacros)
 @propertyWrapper
 public struct ExampleWithProjected<Value: Hashable & Sendable>: Sendable {
     public init(_ wrappedValue: Value) {
@@ -87,7 +80,6 @@ public struct ExampleWithProjected<Value: Hashable & Sendable>: Sendable {
     }
 }
 
-@_spi(ExampleMacros)
 @propertyWrapper
 public final class ExampleWithSettableProjected<Value: Hashable & Sendable>: @unchecked Sendable {
     public init(_ wrappedValue: Value) {
@@ -98,7 +90,6 @@ public final class ExampleWithSettableProjected<Value: Hashable & Sendable>: @un
     public lazy var projectedValue: Int = wrappedValue.hashValue
 }
 
-@_spi(ExampleMacros)
 @propertyWrapper
 public struct ExampleWithWrappedValue<Value: Hashable & Sendable>: Sendable {
     public init(wrappedValue: Value) {

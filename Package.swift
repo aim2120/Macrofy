@@ -5,20 +5,20 @@ import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
-    name: "SwiftPropertyWrapperMacroConverter",
+    name: "Macrofy",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
         .library(
-            name: "SwiftPropertyWrapperMacroConverter",
-            targets: ["SwiftPropertyWrapperMacroConverter"]
+            name: "PropertyWrapperMacro",
+            targets: ["PropertyWrapperMacro"]
         ),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "600.0.0" ..< "700.0.0"),
     ],
     targets: [
-        .macro(
-            name: "SwiftPropertyWrapperMacroConverterMacros",
+        .target(
+            name: "PropertyWrapperMacro",
             dependencies: [
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
@@ -27,12 +27,29 @@ let package = Package(
                 .product(name: "SwiftDiagnostics", package: "swift-syntax"),
             ]
         ),
-        .target(name: "SwiftPropertyWrapperMacroConverter", dependencies: ["SwiftPropertyWrapperMacroConverterMacros"]),
-        .testTarget(
-            name: "SwiftPropertyWrapperMacroConverterTests",
+        .macro(
+            name: "ExampleMacros",
             dependencies: [
-                "SwiftPropertyWrapperMacroConverter",
-                "SwiftPropertyWrapperMacroConverterMacros",
+                "PropertyWrapperMacro",
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftDiagnostics", package: "swift-syntax"),
+            ]
+        ),
+        .target(
+            name: "Examples",
+            dependencies: [
+                "ExampleMacros",
+            ]
+        ),
+        .testTarget(
+            name: "PropertyWrapperMacroTests",
+            dependencies: [
+                "Examples",
+                "ExampleMacros",
+                "PropertyWrapperMacro",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),

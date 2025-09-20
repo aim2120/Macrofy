@@ -1,6 +1,6 @@
 //
 //  PropertyWrapperMacroIntegrationTests.swift
-//  SwiftPropertyWrapperMacroConverter
+//  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
 //
@@ -9,10 +9,8 @@ import Foundation
 
 import Testing
 
-@_spi(ExampleMacros)
-import SwiftPropertyWrapperMacroConverter
-@_spi(ExampleMacros)
-import SwiftPropertyWrapperMacroConverterMacros
+import Examples
+import ExampleMacros
 
 @Suite
 struct PropertyWrapperMacroIntegrationTests {

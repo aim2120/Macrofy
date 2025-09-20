@@ -1,6 +1,6 @@
 //
 //  PropertyWrapperMacro.swift
-//  SwiftPropertyWrapperMacroConverter
+//  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
 //
