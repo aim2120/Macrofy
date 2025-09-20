@@ -11,37 +11,67 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public protocol PropertyWrapperMacro: AccessorMacro, PeerMacro {
-    static var wrappedValueIsSettable: Bool { get }
-    static var projectedValueIsSettable: Bool { get }
-    static var isReferenceType: Bool { get }
-    static func propertyWrapperType(of node: AttributeSyntax,
-                                    providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                    in context: some MacroExpansionContext) -> TypeSyntax
-    static func projectedValueType(of node: AttributeSyntax,
-                                   providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                   in context: some MacroExpansionContext) -> TypeSyntax?
+public protocol PropertyWrapperMacroConfig {
+    init()
+    var wrappedValueIsSettable: Bool { get }
+    var projectedValueIsSettable: Bool { get }
+    var isReferenceType: Bool { get }
+    func propertyWrapperType(of node: AttributeSyntax,
+                             providingAccessorsOf declaration: some DeclSyntaxProtocol,
+                             in context: some MacroExpansionContext) -> TypeSyntax
+    func projectedValueType(of node: AttributeSyntax,
+                            providingAccessorsOf declaration: some DeclSyntaxProtocol,
+                            in context: some MacroExpansionContext) -> TypeSyntax?
 }
 
-public extension PropertyWrapperMacro {
-    static var wrappedValueIsSettable: Bool { false }
-    static var projectedValueIsSettable: Bool { false }
-    static var isReferenceType: Bool { false }
-    static func propertyWrapperType(of node: AttributeSyntax,
-                                    providingAccessorsOf _: some DeclSyntaxProtocol,
-                                    in _: some MacroExpansionContext) -> TypeSyntax
+public extension PropertyWrapperMacroConfig {
+    var wrappedValueIsSettable: Bool { false }
+    var projectedValueIsSettable: Bool { false }
+    var isReferenceType: Bool { false }
+    func propertyWrapperType(of node: AttributeSyntax,
+                             providingAccessorsOf _: some DeclSyntaxProtocol,
+                             in _: some MacroExpansionContext) -> TypeSyntax
     {
         node.attributeName.trimmed
     }
 
-    static func projectedValueType(of _: AttributeSyntax,
-                                   providingAccessorsOf _: some DeclSyntaxProtocol,
-                                   in _: some MacroExpansionContext) -> TypeSyntax?
+    func projectedValueType(of _: AttributeSyntax,
+                            providingAccessorsOf _: some DeclSyntaxProtocol,
+                            in _: some MacroExpansionContext) -> TypeSyntax?
     {
         nil
     }
+}
 
+public struct DefaultPropertyWrapperMacroConfig: PropertyWrapperMacroConfig {
+    public init() {}
+}
+
+public protocol PropertyWrapperMacro: AccessorMacro, PeerMacro {
+    associatedtype Config: PropertyWrapperMacroConfig
+}
+
+public extension PropertyWrapperMacro { // AccessorMacro
     static func expansion(of node: AttributeSyntax,
+                          providingAccessorsOf declaration: some DeclSyntaxProtocol,
+                          in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax]
+    {
+        try expansion(using: Config(), of: node, providingAccessorsOf: declaration, in: context)
+    }
+}
+
+public extension PropertyWrapperMacro { // PeerMacro
+    static func expansion(of node: AttributeSyntax,
+                          providingPeersOf declaration: some DeclSyntaxProtocol,
+                          in context: some MacroExpansionContext) throws -> [DeclSyntax]
+    {
+        try expansion(using: Config(), of: node, providingPeersOf: declaration, in: context)
+    }
+}
+
+public extension PropertyWrapperMacro {
+    static func expansion(using config: any PropertyWrapperMacroConfig,
+                          of node: AttributeSyntax,
                           providingAccessorsOf declaration: some DeclSyntaxProtocol,
                           in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax]
     {
@@ -62,7 +92,7 @@ public extension PropertyWrapperMacro {
         var declSyntax: [AccessorDeclSyntax] = [
             "get { _\(identifier).wrappedValue }",
         ]
-        if wrappedValueIsSettable {
+        if config.wrappedValueIsSettable {
             declSyntax.append(contentsOf: [
                 "set { _\(identifier).wrappedValue = newValue }",
             ])
@@ -73,6 +103,7 @@ public extension PropertyWrapperMacro {
 
 public extension PropertyWrapperMacro {
     static func expansion(
+        using config: any PropertyWrapperMacroConfig,
         of node: AttributeSyntax,
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
@@ -101,18 +132,18 @@ public extension PropertyWrapperMacro {
         }
         let callExpr: ExprSyntax = "(\(callExprArgs.joined(separator: ",")))"
 
-        let letOrVar: ExprSyntax = (!isReferenceType && (wrappedValueIsSettable || projectedValueIsSettable)) ? "var" : "let"
-        let propertyWrapperType = propertyWrapperType(of: node, providingAccessorsOf: declaration, in: context)
+        let letOrVar: ExprSyntax = (!config.isReferenceType && (config.wrappedValueIsSettable || config.projectedValueIsSettable)) ? "var" : "let"
+        let propertyWrapperType = config.propertyWrapperType(of: node, providingAccessorsOf: declaration, in: context)
         var declSyntax: [DeclSyntax] = [
             "private \(letOrVar) _\(identifier) = \(propertyWrapperType)\(callExpr)",
         ]
 
-        if let projectedValueType = projectedValueType(of: node, providingAccessorsOf: declaration, in: context) {
+        if let projectedValueType = config.projectedValueType(of: node, providingAccessorsOf: declaration, in: context) {
             declSyntax.append(contentsOf: [
                 """
                 \(variableDecl.modifiers)var $\(identifier): \(projectedValueType) {
                     get { _\(identifier).projectedValue }
-                    \(projectedValueIsSettable ? "set { _\(identifier).projectedValue = newValue }" : "")
+                    \(config.projectedValueIsSettable ? "set { _\(identifier).projectedValue = newValue }" : "")
                 }
                 """,
             ])

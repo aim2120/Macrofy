@@ -12,32 +12,45 @@ import SwiftSyntaxMacros
 // MARK: Macros
 
 @_spi(ExampleMacros)
-public struct ExamplePropertyWrapperMacro: PropertyWrapperMacro {}
+public struct ExamplePropertyWrapperMacro: PropertyWrapperMacro {
+    public typealias Config = DefaultPropertyWrapperMacroConfig
+}
 
 @_spi(ExampleMacros)
 public struct ExampleSettablePropertyWrapperMacro: PropertyWrapperMacro {
-    public static var wrappedValueIsSettable: Bool { true }
-    public static var isReferenceType: Bool { true }
+    public struct Config: PropertyWrapperMacroConfig {
+        public init() {}
+        public let wrappedValueIsSettable: Bool = true
+        public let isReferenceType: Bool = true
+    }
 }
 
 @_spi(ExampleMacros)
 public struct ExampleWithProjectedPropertyWrapperMacro: PropertyWrapperMacro {
-    public static func projectedValueType(of _: AttributeSyntax,
-                                          providingAccessorsOf _: some DeclSyntaxProtocol,
-                                          in _: some MacroExpansionContext) -> TypeSyntax? { "Int" }
+    public struct Config: PropertyWrapperMacroConfig {
+        public init() {}
+        public func projectedValueType(of _: AttributeSyntax,
+                                       providingAccessorsOf _: some DeclSyntaxProtocol,
+                                       in _: some MacroExpansionContext) -> TypeSyntax? { "Int" }
+    }
 }
 
 @_spi(ExampleMacros)
 public struct ExampleWithSettableProjectedPropertyWrapperMacro: PropertyWrapperMacro {
-    public static var projectedValueIsSettable: Bool { true }
-    public static var isReferenceType: Bool { true }
-    public static func projectedValueType(of _: AttributeSyntax,
-                                          providingAccessorsOf _: some DeclSyntaxProtocol,
-                                          in _: some MacroExpansionContext) -> TypeSyntax? { "Int" }
+    public struct Config: PropertyWrapperMacroConfig {
+        public init() {}
+        public let projectedValueIsSettable: Bool = true
+        public let isReferenceType: Bool = true
+        public func projectedValueType(of _: AttributeSyntax,
+                                       providingAccessorsOf _: some DeclSyntaxProtocol,
+                                       in _: some MacroExpansionContext) -> TypeSyntax? { "Int" }
+    }
 }
 
 @_spi(ExampleMacros)
-public struct ExampleWithWrappedValuePropertyWrapperMacro: PropertyWrapperMacro {}
+public struct ExampleWithWrappedValuePropertyWrapperMacro: PropertyWrapperMacro {
+    public typealias Config = DefaultPropertyWrapperMacroConfig
+}
 
 // MARK: Property Wrappers
 
