@@ -31,6 +31,7 @@ let package = Package(
         .testTarget(
             name: "SwiftPropertyWrapperMacroConverterTests",
             dependencies: [
+                "SwiftPropertyWrapperMacroConverter",
                 "SwiftPropertyWrapperMacroConverterMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
