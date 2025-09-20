@@ -42,7 +42,7 @@ let package = Package(
             name: "Macrofy",
             dependencies: [
                 "MacrofyMacro",
-            ],
+            ]
         ),
         .macro(
             name: "ExampleMacros",
