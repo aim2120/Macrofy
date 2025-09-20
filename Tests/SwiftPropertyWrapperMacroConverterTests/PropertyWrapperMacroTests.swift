@@ -37,7 +37,7 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = Example()
         }
         """
@@ -58,7 +58,7 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = Example("value")
         }
         """
@@ -79,7 +79,7 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = Example(0, and: 1, also: 2)
         }
         """
@@ -100,7 +100,7 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = Example(wrappedValue: Inner())
         }
         """
@@ -121,7 +121,7 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = Example(wrappedValue: Inner(), more: "value")
         }
         """
@@ -145,7 +145,7 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue = newValue
                 }
             }
-        
+
             private let _inner = ExampleSettable()
         }
         """
@@ -166,14 +166,14 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = ExampleWithProjected()
-        
+
             var $inner: Int {
                 get {
                     _inner.projectedValue
                 }
-        
+
             }
         }
         """
@@ -194,14 +194,14 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = ExampleWithProjected()
-        
+
             public var $inner: Int {
                 get {
                     _inner.projectedValue
                 }
-        
+
             }
         }
         """
@@ -222,9 +222,9 @@ final class PropertyWrapperMacroTests: XCTestCase {
                     _inner.wrappedValue
                 }
             }
-        
+
             private let _inner = ExampleWithSettableProjected()
-        
+
             var $inner: Int {
                 get {
                     _inner.projectedValue

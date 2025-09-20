@@ -11,7 +11,7 @@ import SwiftDiagnostics
 enum PropertyWrapperMacroDiagnostic: DiagnosticMessage {
     case unexpectedTypeDeclaration
 
-    var rawValue: String  {
+    var rawValue: String {
         switch self {
         case .unexpectedTypeDeclaration: return "unexpected-type-declaration"
         }

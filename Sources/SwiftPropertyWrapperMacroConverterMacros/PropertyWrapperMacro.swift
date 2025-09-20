@@ -23,25 +23,28 @@ public protocol PropertyWrapperMacro: AccessorMacro, PeerMacro {
                                    in context: some MacroExpansionContext) -> TypeSyntax?
 }
 
-extension PropertyWrapperMacro {
-    public static var wrappedValueIsSettable: Bool { false }
-    public static var projectedValueIsSettable: Bool { false }
-    public static var isReferenceType: Bool { false }
-    public static func propertyWrapperType(of node: AttributeSyntax,
-                                           providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                           in context: some MacroExpansionContext) -> TypeSyntax {
+public extension PropertyWrapperMacro {
+    static var wrappedValueIsSettable: Bool { false }
+    static var projectedValueIsSettable: Bool { false }
+    static var isReferenceType: Bool { false }
+    static func propertyWrapperType(of node: AttributeSyntax,
+                                    providingAccessorsOf _: some DeclSyntaxProtocol,
+                                    in _: some MacroExpansionContext) -> TypeSyntax
+    {
         node.attributeName.trimmed
     }
 
-    public static func projectedValueType(of node: AttributeSyntax,
-                                                    providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                                    in context: some MacroExpansionContext) -> TypeSyntax? {
+    static func projectedValueType(of _: AttributeSyntax,
+                                   providingAccessorsOf _: some DeclSyntaxProtocol,
+                                   in _: some MacroExpansionContext) -> TypeSyntax?
+    {
         nil
     }
 
-    public static func expansion(of node: AttributeSyntax,
-                                 providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                 in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
+    static func expansion(of node: AttributeSyntax,
+                          providingAccessorsOf declaration: some DeclSyntaxProtocol,
+                          in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax]
+    {
         func diagnose(_ diagnostic: PropertyWrapperMacroDiagnostic) -> [AccessorDeclSyntax] {
             context.diagnose(Diagnostic(node: node, message: diagnostic))
             return ["get { fatalError() }"]
@@ -68,8 +71,8 @@ extension PropertyWrapperMacro {
     }
 }
 
-extension PropertyWrapperMacro {
-    public static func expansion(
+public extension PropertyWrapperMacro {
+    static func expansion(
         of node: AttributeSyntax,
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
@@ -111,15 +114,15 @@ extension PropertyWrapperMacro {
                     get { _\(identifier).projectedValue }
                     \(projectedValueIsSettable ? "set { _\(identifier).projectedValue = newValue }" : "")
                 }
-                """
+                """,
             ])
         }
         return declSyntax
     }
 }
 
-extension [ExprSyntax] {
-    fileprivate func joined(separator: ExprSyntax = "") -> ExprSyntax {
+private extension [ExprSyntax] {
+    func joined(separator: ExprSyntax = "") -> ExprSyntax {
         self.reduce("") {
             if "\($0)".isEmpty { return "\($1)" }
             return "\($0)\(separator)\($1)"

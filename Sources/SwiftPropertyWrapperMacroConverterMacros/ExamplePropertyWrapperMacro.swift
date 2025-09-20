@@ -12,7 +12,7 @@ import SwiftSyntaxMacros
 // MARK: Macros
 
 @_spi(ExampleMacros)
-public struct ExamplePropertyWrapperMacro: PropertyWrapperMacro { }
+public struct ExamplePropertyWrapperMacro: PropertyWrapperMacro {}
 
 @_spi(ExampleMacros)
 public struct ExampleSettablePropertyWrapperMacro: PropertyWrapperMacro {
@@ -22,22 +22,22 @@ public struct ExampleSettablePropertyWrapperMacro: PropertyWrapperMacro {
 
 @_spi(ExampleMacros)
 public struct ExampleWithProjectedPropertyWrapperMacro: PropertyWrapperMacro {
-    public static func projectedValueType(of node: AttributeSyntax,
-                                          providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                          in context: some MacroExpansionContext) -> TypeSyntax? { "Int" }
+    public static func projectedValueType(of _: AttributeSyntax,
+                                          providingAccessorsOf _: some DeclSyntaxProtocol,
+                                          in _: some MacroExpansionContext) -> TypeSyntax? { "Int" }
 }
 
 @_spi(ExampleMacros)
 public struct ExampleWithSettableProjectedPropertyWrapperMacro: PropertyWrapperMacro {
     public static var projectedValueIsSettable: Bool { true }
     public static var isReferenceType: Bool { true }
-    public static func projectedValueType(of node: AttributeSyntax,
-                                          providingAccessorsOf declaration: some DeclSyntaxProtocol,
-                                          in context: some MacroExpansionContext) -> TypeSyntax? { "Int" }
+    public static func projectedValueType(of _: AttributeSyntax,
+                                          providingAccessorsOf _: some DeclSyntaxProtocol,
+                                          in _: some MacroExpansionContext) -> TypeSyntax? { "Int" }
 }
 
 @_spi(ExampleMacros)
-public struct ExampleWithWrappedValuePropertyWrapperMacro: PropertyWrapperMacro { }
+public struct ExampleWithWrappedValuePropertyWrapperMacro: PropertyWrapperMacro {}
 
 // MARK: Property Wrappers
 
@@ -47,6 +47,7 @@ public struct Example<Value: Sendable>: Sendable {
     public init(_ wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
+
     public let wrappedValue: Value
 }
 
@@ -56,6 +57,7 @@ public final class ExampleSettable<Value: Sendable>: @unchecked Sendable {
     public init(_ wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
+
     public var wrappedValue: Value
 }
 
@@ -65,6 +67,7 @@ public struct ExampleWithProjected<Value: Hashable & Sendable>: Sendable {
     public init(_ wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
+
     public var wrappedValue: Value
     public var projectedValue: Int {
         wrappedValue.hashValue
@@ -77,6 +80,7 @@ public final class ExampleWithSettableProjected<Value: Hashable & Sendable>: @un
     public init(_ wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
+
     public var wrappedValue: Value
     public lazy var projectedValue: Int = wrappedValue.hashValue
 }
@@ -87,5 +91,6 @@ public struct ExampleWithWrappedValue<Value: Hashable & Sendable>: Sendable {
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
+
     public var wrappedValue: Value
 }

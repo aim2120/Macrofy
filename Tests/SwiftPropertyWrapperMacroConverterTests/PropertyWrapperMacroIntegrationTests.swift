@@ -41,7 +41,7 @@ struct PropertyWrapperMacroIntegrationTests {
         e4.wrappedValue = newValue
         #expect(e4.wrappedValue == newValue)
 
-        let newProjectedValue = Int.random(in: 0..<10_000)
+        let newProjectedValue = Int.random(in: 0 ..< 10000)
         e5.$wrappedValue = newProjectedValue
         #expect(e5.$wrappedValue == newProjectedValue)
     }
