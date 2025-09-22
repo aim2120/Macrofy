@@ -7,32 +7,32 @@
 
 import Foundation
 
-@attached(peer, names: arbitrary)
-@attached(accessor, names: named(get))
+@attached(peer, names: prefixed(_), prefixed(`$`))
+@attached(accessor, names: named(get), named(set))
 public macro Example(
     _ arguments: Any...
 ) = #externalMacro(module: "ExampleMacros", type: "ExampleMacro")
 
-@attached(peer, names: arbitrary)
-@attached(accessor, names: named(get))
+@attached(peer, names: prefixed(_), prefixed(`$`))
+@attached(accessor, names: named(get), named(set))
 public macro ExampleSettable(
     _ arguments: Any...
 ) = #externalMacro(module: "ExampleMacros", type: "ExampleSettableMacro")
 
-@attached(peer, names: arbitrary)
-@attached(accessor, names: named(get))
+@attached(peer, names: prefixed(_), prefixed(`$`))
+@attached(accessor, names: named(get), named(set))
 public macro ExampleWithProjected(
     _ arguments: Any...
 ) = #externalMacro(module: "ExampleMacros", type: "ExampleWithProjectedMacro")
 
-@attached(peer, names: arbitrary)
-@attached(accessor, names: named(get))
+@attached(peer, names: prefixed(_), prefixed(`$`))
+@attached(accessor, names: named(get), named(set))
 public macro ExampleWithSettableProjected(
     _ arguments: Any...
 ) = #externalMacro(module: "ExampleMacros", type: "ExampleWithSettableProjectedMacro")
 
-@attached(peer, names: arbitrary)
-@attached(accessor, names: named(get))
+@attached(peer, names: prefixed(_), prefixed(`$`))
+@attached(accessor, names: named(get), named(set))
 public macro ExampleWithWrappedValue(
     _ arguments: Any...
 ) = #externalMacro(module: "ExampleMacros", type: "ExampleWithWrappedValueMacro")
