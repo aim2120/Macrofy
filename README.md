@@ -97,7 +97,7 @@ public macro MyWrapper(
 import MyWrapperMacro
 
 final class Service: Sendable {
-    @MyWrapper var value = "I'm a macro!"
+    @MyWrapper var value: String = "I'm a macro!"
 }
 ```
 
