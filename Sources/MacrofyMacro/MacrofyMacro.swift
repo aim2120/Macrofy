@@ -11,6 +11,43 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
+/// Implementation of the `@macrofy` macro.
+///
+/// This macro analyzes a property wrapper type and generates a corresponding
+/// `PropertyWrapperMacro` implementation that can be used to apply the property
+/// wrapper behavior through macro expansion.
+///
+/// ## Analysis Process
+///
+/// The macro performs the following analysis:
+/// 1. Validates the target is a supported declaration type (struct, class, actor, enum)
+/// 2. Locates the required `wrappedValue` property
+/// 3. Optionally locates a `projectedValue` property
+/// 4. Determines mutability characteristics of both properties
+/// 5. Generates a configuration struct with the analyzed characteristics
+///
+/// ## Generated Code
+///
+/// For a property wrapper like:
+/// ```swift
+/// @macrofy
+/// @propertyWrapper
+/// public struct MyWrapper<T> {
+///     public var wrappedValue: T
+///     public var projectedValue: String { "projected" }
+/// }
+/// ```
+///
+/// Generates:
+/// ```swift
+/// public struct MyWrapperMacro: PropertyWrapperMacro {
+///     public struct Config: PropertyWrapperMacroConfig {
+///         public init() {}
+///         public let wrappedValueIsSettable = true
+///         public func projectedValueType(...) -> TypeSyntax? { "String" }
+///     }
+/// }
+/// ```
 public struct MacrofyMacro: PeerMacro {
     public static func expansion(of node: AttributeSyntax,
                                  providingPeersOf declaration: some DeclSyntaxProtocol,

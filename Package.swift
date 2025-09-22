@@ -12,6 +12,10 @@ let package = Package(
             name: "PropertyWrapperMacro",
             targets: ["PropertyWrapperMacro"]
         ),
+        .library(
+            name: "PropertyWrapperMacro",
+            targets: ["PropertyWrapperMacro"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "600.0.0" ..< "700.0.0"),
@@ -42,6 +46,7 @@ let package = Package(
             name: "Macrofy",
             dependencies: [
                 "MacrofyMacro",
+                "PropertyWrapperMacro",
             ]
         ),
         .macro(
