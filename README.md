@@ -91,7 +91,7 @@ public macro MyWrapper(
 ) = #externalMacro(module: "MyWrapperMacroInternal", type: "MyWrapperMacro")
 ```
 
-### Step 3: Use your macro in place of your property wrapper
+### Step 4: Use your macro in place of your property wrapper
 
 ```swift
 import MyWrapperMacro
