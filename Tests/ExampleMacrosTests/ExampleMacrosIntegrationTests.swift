@@ -9,8 +9,8 @@ import Foundation
 
 import Testing
 
-import Examples
 import ExampleMacros
+import Examples
 
 @Suite
 struct ExampleMacrosIntegrationTests {
@@ -20,18 +20,21 @@ struct ExampleMacrosIntegrationTests {
         let e3 = Example3()
         let e4 = Example4()
         let e5 = Example5()
+        let e6 = Example6()
 
         #expect(e1.wrappedValue == randomID)
         #expect(e2.wrappedValue == randomID)
         #expect(e3.wrappedValue == randomID)
         #expect(e4.wrappedValue == randomID)
         #expect(e5.wrappedValue == randomID)
+        #expect(e6.wrappedValue == randomID)
 
         #expect(e1.propertyWrapper.wrappedValue == randomID)
         #expect(e2.propertyWrapper.wrappedValue == randomID)
         #expect(e3.propertyWrapper.wrappedValue == randomID)
         #expect(e4.propertyWrapper.wrappedValue == randomID)
         #expect(e5.propertyWrapper.wrappedValue == randomID)
+        #expect(e6.propertyWrapper.wrappedValue == randomID)
 
         #expect(e2.$wrappedValue == randomID.hashValue)
 
@@ -42,6 +45,8 @@ struct ExampleMacrosIntegrationTests {
         let newProjectedValue = Int.random(in: 0 ..< 10000)
         e5.$wrappedValue = newProjectedValue
         #expect(e5.$wrappedValue == newProjectedValue)
+
+        #expect(e6.$wrappedValue.get() == randomID)
     }
 }
 
@@ -75,4 +80,10 @@ final class Example5: Sendable {
     @ExampleWithSettableProjected(randomID) var wrappedValue: UUID
 
     var propertyWrapper: ExampleWithSettableProjected<UUID> { _wrappedValue }
+}
+
+final class Example6: Sendable {
+    @ExampleWithGenericProjected(randomID) var wrappedValue: UUID
+
+    var propertyWrapper: ExampleWithGenericProjected<UUID> { _wrappedValue }
 }

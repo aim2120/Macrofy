@@ -13,11 +13,13 @@ enum MacrofyMacroDiagnostic: DiagnosticMessage {
 
     case unsupportedDeclarationType
     case missingWrappedValue
+    case missingProjectedValueType
 
     var rawValue: String {
         switch self {
         case .unsupportedDeclarationType: return "unsupported_declaration"
         case .missingWrappedValue: return "missing_wrapped_value"
+        case .missingProjectedValueType: return "missing_projected_value_type"
         }
     }
 
@@ -25,6 +27,7 @@ enum MacrofyMacroDiagnostic: DiagnosticMessage {
         switch self {
         case .unsupportedDeclarationType: return "The \(Self.macroName) macro can only be used on a struct, class, actor, or enum."
         case .missingWrappedValue: return "A property wrapper must have a wrappedValue member."
+        case .missingProjectedValueType: return "A property wrapper with a projectedValue must have an explicit type"
         }
     }
 
@@ -36,6 +39,7 @@ enum MacrofyMacroDiagnostic: DiagnosticMessage {
         switch self {
         case .unsupportedDeclarationType: return .error
         case .missingWrappedValue: return .error
+        case .missingProjectedValueType: return .error
         }
     }
 }

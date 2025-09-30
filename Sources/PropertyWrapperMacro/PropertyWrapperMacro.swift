@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import MacrofyModels
 import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
+
+// MARK: Config
 
 /// Configuration protocol for ``PropertyWrapperMacro`` implementations.
 ///
@@ -99,6 +102,8 @@ public extension PropertyWrapperMacroConfig {
 public struct DefaultPropertyWrapperMacroConfig: PropertyWrapperMacroConfig {
     public init() {}
 }
+
+// MARK: Macro
 
 /// Protocol for property wrapper macros.
 ///
@@ -215,7 +220,7 @@ public extension PropertyWrapperMacro {
     ) throws -> [DeclSyntax] {
         func diagnose(_ diagnostic: PropertyWrapperMacroDiagnostic) -> [DeclSyntax] {
             context.diagnose(Diagnostic(node: node, message: diagnostic))
-            return ["get { fatalError() }"]
+            return []
         }
 
         guard let variableDecl = declaration.as(VariableDeclSyntax.self) else {
@@ -228,16 +233,16 @@ public extension PropertyWrapperMacro {
             return diagnose(.unexpectedTypeDeclaration)
         }
 
-        var callExprArgs: [ExprSyntax] = []
+        var callExprArgs: [String] = []
         if let initializer = binding.initializer {
             callExprArgs.append("wrappedValue: \(initializer.value)")
         }
         if let arguments = node.arguments {
             callExprArgs.append("\(arguments)")
         }
-        let callExpr: ExprSyntax = "(\(callExprArgs.joined(separator: ",")))"
+        let callExpr: ExprSyntax = "(\(raw: callExprArgs.joined(separator: ",")))"
 
-        let letOrVar: ExprSyntax = (!config.isReferenceType && (config.wrappedValueIsSettable || config.projectedValueIsSettable)) ? "var" : "let"
+        let letOrVar: TokenSyntax = (!config.isReferenceType && (config.wrappedValueIsSettable || config.projectedValueIsSettable)) ? "var" : "let"
         let propertyWrapperType = config.propertyWrapperType(of: node, providingAccessorsOf: declaration, in: context)
         var declSyntax: [DeclSyntax] = [
             "private \(letOrVar) _\(identifier) = \(propertyWrapperType)\(callExpr)",
@@ -257,11 +262,85 @@ public extension PropertyWrapperMacro {
     }
 }
 
-private extension [ExprSyntax] {
-    func joined(separator: ExprSyntax = "") -> ExprSyntax {
-        self.reduce("") {
-            if "\($0)".isEmpty { return "\($1)" }
-            return "\($0)\(separator)\($1)"
+// MARK: Projected Value Helpers
+
+public extension PropertyWrapperMacroConfig {
+    /// Resolves the projected value type for generic property wrappers by mapping generic type parameters to their concrete types.
+    ///
+    /// This function is used when the property wrapper contains generic parameters and the projected value type
+    /// needs to be resolved based on the actual concrete types used in the variable declaration. It performs
+    /// type mapping by comparing the original generic declarations with the annotated concrete types.
+    ///
+    /// ## Usage
+    /// 
+    /// This function is primarily called by the `MacrofyMacro` when generating property wrapper macros that
+    /// contain generic projected values. For example, when transforming:
+    /// 
+    /// ```swift
+    /// @propertyWrapper
+    /// struct MyWrapper<Value> {
+    ///     let wrappedValue: Value
+    ///     let projectedValue: Binding<Value>
+    /// }
+    /// ```
+    /// 
+    /// Used with a concrete type like `@MyWrapper var name: String`, this function will resolve
+    /// `Binding<Value>` to `Binding<String>`.
+    ///
+    /// ## Type Mapping Process
+    /// 
+    /// 1. Extracts type trees from the original wrapped and projected value declarations
+    /// 2. Creates a type tree from the concrete variable declaration
+    /// 3. Builds a mapping from generic types to concrete types by comparing type trees
+    /// 4. Applies the mapping to transform the projected value type
+    ///
+    /// - Parameters:
+    ///   - node: The macro attribute syntax node for diagnostic reporting
+    ///   - originalWrappedValue: The original wrapped value declaration from the property wrapper definition
+    ///   - originalProjectedValue: The original projected value declaration from the property wrapper definition
+    ///   - declaration: The concrete variable declaration being processed with specific type annotations
+    ///   - context: The macro expansion context for diagnostic reporting and type resolution
+    /// - Returns: The resolved projected value type with generic parameters substituted, or `nil` if resolution fails
+    /// - Note: Returns `nil` and emits diagnostics for malformed declarations or unsupported type structures
+    func projectedValueType(of node: AttributeSyntax,
+                            originalWrappedValue: DeclSyntax,
+                            originalProjectedValue: DeclSyntax,
+                            providingAccessorsOf declaration: some DeclSyntaxProtocol,
+                            in context: some MacroExpansionContext) -> TypeSyntax?
+    {
+        func diagnose(_ diagnostic: PropertyWrapperMacroDiagnostic) -> TypeSyntax? {
+            context.diagnose(Diagnostic(node: node, message: diagnostic))
+            return nil
         }
+
+        guard let originalWrappedValueTypeTree = originalWrappedValue.as(VariableDeclSyntax.self)?.bindings.first?.typeAnnotation?.type.as(IdentifierTypeSyntax.self).map(TypeTree.init) else {
+            return diagnose(.unexpectedWrappedValueType)
+        }
+        guard let originalProjectedValueTypeTree = originalProjectedValue.as(VariableDeclSyntax.self)?.bindings.first?.typeAnnotation?.type.as(IdentifierTypeSyntax.self).map(TypeTree.init) else {
+            return diagnose(.unexpectedProjectedValueType)
+        }
+
+        guard let variableDecl = declaration.as(VariableDeclSyntax.self) else {
+            return diagnose(.unexpectedTypeDeclaration)
+        }
+        guard let typeAnnotation = variableDecl.bindings.first?.typeAnnotation else {
+            return diagnose(.unexpectedTypeDeclaration)
+        }
+        guard let identifierType = typeAnnotation.type.as(IdentifierTypeSyntax.self) else {
+            return diagnose(.unexpectedTypeDeclaration)
+        }
+
+        let annotatedTypeTree = TypeTree(identifierType)
+
+        var originalToAnnotatedTypeMap: [String: String] = [:]
+        for (originalType, annotatedType) in zip(originalWrappedValueTypeTree, annotatedTypeTree) where originalType.type != annotatedType.type {
+            originalToAnnotatedTypeMap[originalType.type] = annotatedType.type
+        }
+
+        let projectedValueType = originalToAnnotatedTypeMap.reduce(originalProjectedValueTypeTree) { typeTree, type in
+            typeTree.replacing(type: type.key, with: type.value)
+        }
+
+        return projectedValueType.typeSyntax
     }
 }

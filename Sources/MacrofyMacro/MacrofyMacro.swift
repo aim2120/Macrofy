@@ -50,14 +50,14 @@ import SwiftSyntaxMacros
 /// ```
 public struct MacrofyMacro: PeerMacro {
     public static func expansion(of node: AttributeSyntax,
-                                 providingPeersOf declaration: some DeclSyntaxProtocol,
+                                 providingPeersOf declSyntax: some DeclSyntaxProtocol,
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax]
     {
         func diagnose(_ diagnostic: MacrofyMacroDiagnostic) -> [DeclSyntax] {
             context.diagnose(Diagnostic(node: node, message: diagnostic))
             return []
         }
-        guard let declaration = Declaration(declaration) else {
+        guard let declaration = Declaration(declSyntax) else {
             return diagnose(.unsupportedDeclarationType)
         }
 
@@ -72,50 +72,54 @@ public struct MacrofyMacro: PeerMacro {
         let projectedValue: (variableDecl: VariableDeclSyntax, binding: PatternBindingSyntax)? = members.firstVariable(withName: "projectedValue")
 
         let wrappedValueIsSettable = variableIsSettable(variableDecl: wrappedValue.variableDecl, binding: wrappedValue.binding)
+
         let projectedValueIsSettable: Bool?
+        let projectedValueTypeResolver: ExprSyntax?
         if let projectedValue {
             projectedValueIsSettable = variableIsSettable(variableDecl: projectedValue.variableDecl, binding: projectedValue.binding)
+            projectedValueTypeResolver = self.projectedValueTypeResolver(of: node, wrappedValue: wrappedValue, projectedValue: projectedValue, declaration: declaration, in: context)
         } else {
             projectedValueIsSettable = nil
+            projectedValueTypeResolver = nil
         }
 
         let configMembers = try MemberBlockItemListSyntax {
             DeclSyntax("""
-            
+
             public init() { }
-            
+
             """)
 
-            if let projectedValue {
-                if let projectedValueType = projectedValue.binding.typeAnnotation {
-                    try FunctionDeclSyntax("""
-                    
-                    public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? { "\(projectedValueType.type.trimmed)" }
-                    
-                    """)
+            if let projectedValueTypeResolver {
+                try FunctionDeclSyntax("""
+
+                public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
+                    \(projectedValueTypeResolver)
                 }
+
+                """)
                 // TODO: handle when projected type annotation is missing
                 // TODO: handle projected type with generics
             }
             if declaration.isReferenceType {
                 try VariableDeclSyntax("""
-                
+
                 public let isReferenceType = true
-                
+
                 """)
             }
             if wrappedValueIsSettable {
                 try VariableDeclSyntax("""
-                
+
                 public let wrappedValueIsSettable = true
-                
+
                 """)
             }
             if projectedValueIsSettable == true {
                 try VariableDeclSyntax("""
-                
+
                 public let projectedValueIsSettable = true
-                
+
                 """)
             }
         }
@@ -129,7 +133,7 @@ public struct MacrofyMacro: PeerMacro {
             public struct \(declaration.name.trimmed)Macro: PropertyWrapperMacro {
                 \(config)
             }
-            """
+            """,
         ]
     }
 
@@ -143,7 +147,7 @@ public struct MacrofyMacro: PeerMacro {
             // mutable var
             return true
         }
-        guard case .accessors(let accessors) = accessorBlock.accessors else {
+        guard case let .accessors(accessors) = accessorBlock.accessors else {
             // var with only getter
             return false
         }
@@ -151,6 +155,44 @@ public struct MacrofyMacro: PeerMacro {
             $0.accessorSpecifier.trimmed.text == TokenSyntax.keyword(.set).text
         })
         return containsSetter
+    }
+
+    private static func projectedValueTypeResolver(of node: AttributeSyntax,
+                                                   wrappedValue: (variableDecl: VariableDeclSyntax, binding: PatternBindingSyntax),
+                                                   projectedValue: (variableDecl: VariableDeclSyntax, binding: PatternBindingSyntax),
+                                                   declaration: Declaration,
+                                                   in context: some MacroExpansionContext) -> ExprSyntax?
+    {
+        func diagnose(_ diagnostic: MacrofyMacroDiagnostic) -> ExprSyntax? {
+            context.diagnose(Diagnostic(node: node, message: diagnostic))
+            return nil
+        }
+
+        guard let typeAnnotation = projectedValue.binding.typeAnnotation else {
+            return diagnose(.missingProjectedValueType)
+        }
+        lazy var typeAsString: ExprSyntax = "\"\(typeAnnotation.type.trimmed)\""
+
+        guard declaration.genericParameterClause != nil else {
+            return typeAsString
+        }
+
+        // our property wrapper type has generics
+        // to determine the projected value type, we need to use the helper function to evaluate the types
+        // the helper function is defined in PropertyWrapperMacro.swift
+        return """
+        projectedValueType(
+            of: node,
+            originalWrappedValue: #\"""
+            \(wrappedValue.variableDecl.trimmed)
+            \"""#,
+            originalProjectedValue: #\"""
+            \(projectedValue.variableDecl.trimmed)
+            \"""#,
+            providingAccessorsOf: declaration,
+            in: context
+        )
+        """
     }
 }
 
@@ -179,40 +221,53 @@ private enum Declaration {
 
     var declSyntax: any DeclSyntaxProtocol {
         switch self {
-        case .struct(let structDeclSyntax):
+        case let .struct(structDeclSyntax):
             return structDeclSyntax
-        case .class(let classDeclSyntax):
+        case let .class(classDeclSyntax):
             return classDeclSyntax
-        case .actor(let actorDeclSyntax):
+        case let .actor(actorDeclSyntax):
             return actorDeclSyntax
-        case .enum(let enumDeclSyntax):
+        case let .enum(enumDeclSyntax):
             return enumDeclSyntax
         }
     }
 
     var memberBlock: MemberBlockSyntax {
         switch self {
-        case .struct(let structDeclSyntax):
+        case let .struct(structDeclSyntax):
             return structDeclSyntax.memberBlock
-        case .class(let classDeclSyntax):
+        case let .class(classDeclSyntax):
             return classDeclSyntax.memberBlock
-        case .actor(let actorDeclSyntax):
+        case let .actor(actorDeclSyntax):
             return actorDeclSyntax.memberBlock
-        case .enum(let enumDeclSyntax):
+        case let .enum(enumDeclSyntax):
             return enumDeclSyntax.memberBlock
         }
     }
 
     var name: TokenSyntax {
         switch self {
-        case .struct(let structDeclSyntax):
+        case let .struct(structDeclSyntax):
             return structDeclSyntax.name
-        case .class(let classDeclSyntax):
+        case let .class(classDeclSyntax):
             return classDeclSyntax.name
-        case .actor(let actorDeclSyntax):
+        case let .actor(actorDeclSyntax):
             return actorDeclSyntax.name
-        case .enum(let enumDeclSyntax):
+        case let .enum(enumDeclSyntax):
             return enumDeclSyntax.name
+        }
+    }
+
+    var genericParameterClause: GenericParameterClauseSyntax? {
+        switch self {
+        case let .struct(structDeclSyntax):
+            return structDeclSyntax.genericParameterClause
+        case let .class(classDeclSyntax):
+            return classDeclSyntax.genericParameterClause
+        case let .actor(actorDeclSyntax):
+            return actorDeclSyntax.genericParameterClause
+        case let .enum(enumDeclSyntax):
+            return enumDeclSyntax.genericParameterClause
         }
     }
 
@@ -232,12 +287,18 @@ private extension MemberBlockItemListSyntax {
             $0.decl.as(VariableDeclSyntax.self)
         }
         .compactMap { variableDecl -> (VariableDeclSyntax, PatternBindingSyntax)? in
-            let wrappedValueBinding = variableDecl.bindings.first(where: {
-                $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text == name
-            })
-            guard let wrappedValueBinding else { return nil }
-            return (variableDecl, wrappedValueBinding)
+            let binding = variableDecl.firstPatternBinding(withName: name)
+            guard let binding else { return nil }
+            return (variableDecl, binding)
         }
         .first
+    }
+}
+
+private extension VariableDeclSyntax {
+    func firstPatternBinding(withName name: String) -> PatternBindingSyntax? {
+        bindings.first(where: {
+            $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text == name
+        })
     }
 }
