@@ -36,9 +36,8 @@ public extension TypeTree {
 extension TypeTree: Sequence {
     public typealias Element = TypeTree
 
-    public func makeIterator() -> AnyIterator<Element> {
-        let iterator = ([self] + children).makeIterator()
-        return AnyIterator(iterator)
+    public func makeIterator() -> Array<Element>.Iterator {
+        ([self] + children).makeIterator()
     }
 }
 
