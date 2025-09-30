@@ -74,6 +74,7 @@ let package = Package(
             name: "MacrofyMacroTests",
             dependencies: [
                 "Macrofy",
+                "MacrofyMacro",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
