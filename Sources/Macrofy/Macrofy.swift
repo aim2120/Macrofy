@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@_exported import MacrofyModels
 @_exported import PropertyWrapperMacro
 
 /// Automatically generates a property wrapper macro from a property wrapper type.

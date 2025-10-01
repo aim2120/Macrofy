@@ -33,6 +33,12 @@ public macro ExampleWithSettableProjected(
 
 @attached(peer, names: prefixed(_), prefixed(`$`))
 @attached(accessor, names: named(get), named(set))
+public macro ExampleWithGenericProjected(
+    _ arguments: Any...
+) = #externalMacro(module: "ExampleMacros", type: "ExampleWithGenericProjectedMacro")
+
+@attached(peer, names: prefixed(_), prefixed(`$`))
+@attached(accessor, names: named(get), named(set))
 public macro ExampleWithWrappedValue(
     _ arguments: Any...
 ) = #externalMacro(module: "ExampleMacros", type: "ExampleWithWrappedValueMacro")

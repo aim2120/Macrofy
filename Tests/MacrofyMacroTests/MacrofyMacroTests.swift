@@ -33,7 +33,7 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             let wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
@@ -58,12 +58,12 @@ final class MacrofyMacroTests: XCTestCase {
         class MyPropertyWrapper {
             let wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public let isReferenceType = true
             }
         }
@@ -85,12 +85,12 @@ final class MacrofyMacroTests: XCTestCase {
         final class MyPropertyWrapper {
             let wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public let isReferenceType = true
             }
         }
@@ -112,12 +112,12 @@ final class MacrofyMacroTests: XCTestCase {
         actor MyPropertyWrapper {
             let wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public let isReferenceType = true
             }
         }
@@ -139,7 +139,7 @@ final class MacrofyMacroTests: XCTestCase {
         enum MyPropertyWrapper {
             let wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
@@ -166,7 +166,7 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             let wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
@@ -191,7 +191,7 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             let wrappedValue: String = "hello"
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
@@ -216,7 +216,7 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             var wrappedValue: String { "hello" }
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
@@ -241,7 +241,7 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             var wrappedValue: String { get { "hello" } }
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
@@ -266,12 +266,12 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             var wrappedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public let wrappedValueIsSettable = true
             }
         }
@@ -293,12 +293,12 @@ final class MacrofyMacroTests: XCTestCase {
         struct MyPropertyWrapper {
             var wrappedValue: String = "hello"
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public let wrappedValueIsSettable = true
             }
         }
@@ -328,12 +328,12 @@ final class MacrofyMacroTests: XCTestCase {
             }
             var backingValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public let wrappedValueIsSettable = true
             }
         }
@@ -359,12 +359,12 @@ final class MacrofyMacroTests: XCTestCase {
             let wrappedValue: String
             let projectedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
@@ -390,12 +390,12 @@ final class MacrofyMacroTests: XCTestCase {
             let wrappedValue: String
             let projectedValue: String = "hello"
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
@@ -421,12 +421,12 @@ final class MacrofyMacroTests: XCTestCase {
             let wrappedValue: String
             var projectedValue: String { "hello" }
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
@@ -452,12 +452,12 @@ final class MacrofyMacroTests: XCTestCase {
             let wrappedValue: String
             var projectedValue: String { get { "hello" } }
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
@@ -483,16 +483,16 @@ final class MacrofyMacroTests: XCTestCase {
             let wrappedValue: String
             var projectedValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
-        
+
             public let projectedValueIsSettable = true
             }
         }
@@ -516,16 +516,16 @@ final class MacrofyMacroTests: XCTestCase {
             let wrappedValue: String
             var projectedValue: String = "hello"
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
-        
+
             public let projectedValueIsSettable = true
             }
         }
@@ -557,17 +557,99 @@ final class MacrofyMacroTests: XCTestCase {
             }
             var backingValue: String
         }
-        
+
         public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
             public struct Config: PropertyWrapperMacroConfig {
             public init() {
             }
-        
+
             public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
                 "String"
             }
-        
+
             public let projectedValueIsSettable = true
+            }
+        }
+        """
+
+        assertMacroExpansion(original, expandedSource: expected, macros: testMacros)
+    }
+
+    func testMacrofyMacro_projectedValue_genericValue() async throws {
+        let original = """
+        @macrofy
+        @propertyWrapper
+        struct MyPropertyWrapper<Value> {
+            let wrappedValue: Value
+            let projectedValue: Binding<Value>
+        }
+        """
+        let expected = """
+        @propertyWrapper
+        struct MyPropertyWrapper<Value> {
+            let wrappedValue: Value
+            let projectedValue: Binding<Value>
+        }
+
+        public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
+            public struct Config: PropertyWrapperMacroConfig {
+            public init() {
+            }
+
+            public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
+                projectedValueType(
+                    of: node,
+                    originalWrappedValue: #\"""
+                    let wrappedValue: Value
+                    \"""#,
+                    originalProjectedValue: #\"""
+                    let projectedValue: Binding<Value>
+                    \"""#,
+                    providingAccessorsOf: declaration,
+                    in: context
+                )
+            }
+            }
+        }
+        """
+
+        assertMacroExpansion(original, expandedSource: expected, macros: testMacros)
+    }
+
+    func testMacrofyMacro_projectedValue_nestedGenericValue() async throws {
+        let original = """
+        @macrofy
+        @propertyWrapper
+        struct MyPropertyWrapper<Value> {
+            let wrappedValue: Value
+            let projectedValue: Binding<Publisher<Value, Never>>
+        }
+        """
+        let expected = """
+        @propertyWrapper
+        struct MyPropertyWrapper<Value> {
+            let wrappedValue: Value
+            let projectedValue: Binding<Publisher<Value, Never>>
+        }
+
+        public struct MyPropertyWrapperMacro: PropertyWrapperMacro {
+            public struct Config: PropertyWrapperMacroConfig {
+            public init() {
+            }
+
+            public func projectedValueType(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) -> TypeSyntax? {
+                projectedValueType(
+                    of: node,
+                    originalWrappedValue: #\"""
+                    let wrappedValue: Value
+                    \"""#,
+                    originalProjectedValue: #\"""
+                    let projectedValue: Binding<Publisher<Value, Never>>
+                    \"""#,
+                    providingAccessorsOf: declaration,
+                    in: context
+                )
+            }
             }
         }
         """

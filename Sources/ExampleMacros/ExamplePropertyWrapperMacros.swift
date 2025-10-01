@@ -55,6 +55,17 @@ public final class ExampleWithSettableProjected<Value: Hashable & Sendable>: @un
 
 @macrofy
 @propertyWrapper
+public final class ExampleWithGenericProjected<Value: Hashable & Sendable>: @unchecked Sendable {
+    public init(_ wrappedValue: Value) {
+        self.wrappedValue = wrappedValue
+    }
+
+    public let wrappedValue: Value
+    public var projectedValue: Result<Value, Never> { Result { wrappedValue } }
+}
+
+@macrofy
+@propertyWrapper
 public struct ExampleWithWrappedValue<Value: Hashable & Sendable>: Sendable {
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue

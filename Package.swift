@@ -12,10 +12,6 @@ let package = Package(
             name: "PropertyWrapperMacro",
             targets: ["PropertyWrapperMacro"]
         ),
-        .library(
-            name: "PropertyWrapperMacro",
-            targets: ["PropertyWrapperMacro"]
-        ),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "600.0.0" ..< "700.0.0"),
@@ -24,6 +20,7 @@ let package = Package(
         .target(
             name: "PropertyWrapperMacro",
             dependencies: [
+                "MacrofyModels",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
@@ -43,16 +40,22 @@ let package = Package(
             ]
         ),
         .target(
+            name: "MacrofyModels",
+            dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+            ]
+        ),
+        .target(
             name: "Macrofy",
             dependencies: [
                 "MacrofyMacro",
+                "MacrofyModels",
                 "PropertyWrapperMacro",
             ]
         ),
         .macro(
             name: "ExampleMacros",
             dependencies: [
-                "PropertyWrapperMacro",
                 "Macrofy",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
@@ -72,7 +75,6 @@ let package = Package(
             dependencies: [
                 "Macrofy",
                 "MacrofyMacro",
-                "PropertyWrapperMacro",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
@@ -82,7 +84,16 @@ let package = Package(
                 "Examples",
                 "ExampleMacros",
                 "PropertyWrapperMacro",
+                "MacrofyModels",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
+        .testTarget(
+            name: "MacrofyModelsTests",
+            dependencies: [
+                "MacrofyModels",
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
             ]
         ),
     ],

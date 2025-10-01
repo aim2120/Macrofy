@@ -21,6 +21,7 @@ final class ExampleMacrosTests: XCTestCase {
         "ExampleSettable": ExampleSettableMacro.self,
         "ExampleWithProjected": ExampleWithProjectedMacro.self,
         "ExampleWithSettableProjected": ExampleWithSettableProjectedMacro.self,
+        "ExampleWithGenericProjected": ExampleWithGenericProjectedMacro.self,
     ]
 
     func testExamplePropertyWrapperMacro() async throws {
@@ -231,6 +232,34 @@ final class ExampleMacrosTests: XCTestCase {
                 set {
                     _inner.projectedValue = newValue
                 }
+            }
+        }
+        """
+
+        assertMacroExpansion(original, expandedSource: expected, macros: testMacros)
+    }
+
+    func testExampleWithGenericProjectedPropertyWrapperMacro() async throws {
+        let original = """
+        final class Outer {
+            @ExampleWithGenericProjected var inner: Inner
+        }
+        """
+        let expected = """
+        final class Outer {
+            var inner: Inner {
+                get {
+                    _inner.wrappedValue
+                }
+            }
+
+            private let _inner = ExampleWithGenericProjected()
+
+            var $inner: Result<Inner, Never> {
+                get {
+                    _inner.projectedValue
+                }
+
             }
         }
         """

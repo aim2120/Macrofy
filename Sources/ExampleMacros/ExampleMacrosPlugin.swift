@@ -1,5 +1,5 @@
 //
-//  MacrofyPlugin.swift
+//  ExampleMacrosPlugin.swift
 //  Macrofy
 //
 //  Created by Annalise Mariottini on 9/19/25.
@@ -15,6 +15,7 @@ struct ExampleMacrosPlugin: CompilerPlugin {
         ExampleSettableMacro.self,
         ExampleWithProjectedMacro.self,
         ExampleWithSettableProjectedMacro.self,
+        ExampleWithGenericProjectedMacro.self,
         ExampleWithWrappedValueMacro.self,
     ]
 }
