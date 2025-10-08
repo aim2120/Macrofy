@@ -23,6 +23,7 @@ struct ExampleMacrosIntegrationTests {
         let e6 = Example6()
 
         #expect(e1.wrappedValue == randomID)
+        #expect(e1.wrappedValue2 == randomID)
         #expect(e2.wrappedValue == randomID)
         #expect(e3.wrappedValue == randomID)
         #expect(e4.wrappedValue == randomID)
@@ -30,6 +31,7 @@ struct ExampleMacrosIntegrationTests {
         #expect(e6.wrappedValue == randomID)
 
         #expect(e1.propertyWrapper.wrappedValue == randomID)
+        #expect(e1.propertyWrapper2.wrappedValue == randomID)
         #expect(e2.propertyWrapper.wrappedValue == randomID)
         #expect(e3.propertyWrapper.wrappedValue == randomID)
         #expect(e4.propertyWrapper.wrappedValue == randomID)
@@ -54,8 +56,10 @@ private let randomID = UUID()
 
 final class Example1: Sendable {
     @Example(randomID) var wrappedValue: UUID
+    @Examples.Example(randomID) var wrappedValue2: UUID
 
     var propertyWrapper: Example<UUID> { _wrappedValue }
+    var propertyWrapper2: Example<UUID> { _wrappedValue2 }
 }
 
 final class Example2: Sendable {

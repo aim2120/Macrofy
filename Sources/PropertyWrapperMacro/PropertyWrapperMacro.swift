@@ -80,11 +80,22 @@ public extension PropertyWrapperMacroConfig {
     /// Default implementation uses the macro's attribute name as the property wrapper type.
     ///
     /// For example, `@MyWrapper` becomes `MyWrapper`.
+    ///
+    /// This implementation also supports module-qualified symbols. For example, `@MyModule.MyWrapper` becomes `MyWrapper`.
     func propertyWrapperType(of node: AttributeSyntax,
                              providingAccessorsOf _: some DeclSyntaxProtocol,
                              in _: some MacroExpansionContext) -> TypeSyntax
     {
-        node.attributeName.trimmed
+        // @MacroName var value: Value
+        if let identifierTypeSyntax = node.attributeName.as(IdentifierTypeSyntax.self) {
+            return TypeSyntax(fromProtocol: identifierTypeSyntax).trimmed
+        }
+        // @ModuleName.MacroName var value: Value
+        if let memberTypeSyntax = node.attributeName.as(MemberTypeSyntax.self) {
+            return TypeSyntax(stringLiteral: memberTypeSyntax.name.trimmedDescription)
+        }
+        // fallback
+        return node.attributeName.trimmed
     }
 
     /// Default implementation returns `nil`, indicating no projected value.
@@ -272,10 +283,10 @@ public extension PropertyWrapperMacroConfig {
     /// type mapping by comparing the original generic declarations with the annotated concrete types.
     ///
     /// ## Usage
-    /// 
+    ///
     /// This function is primarily called by the `MacrofyMacro` when generating property wrapper macros that
     /// contain generic projected values. For example, when transforming:
-    /// 
+    ///
     /// ```swift
     /// @propertyWrapper
     /// struct MyWrapper<Value> {
@@ -283,12 +294,12 @@ public extension PropertyWrapperMacroConfig {
     ///     let projectedValue: Binding<Value>
     /// }
     /// ```
-    /// 
+    ///
     /// Used with a concrete type like `@MyWrapper var name: String`, this function will resolve
     /// `Binding<Value>` to `Binding<String>`.
     ///
     /// ## Type Mapping Process
-    /// 
+    ///
     /// 1. Extracts type trees from the original wrapped and projected value declarations
     /// 2. Creates a type tree from the concrete variable declaration
     /// 3. Builds a mapping from generic types to concrete types by comparing type trees
