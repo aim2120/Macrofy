@@ -1,6 +1,6 @@
+@testable import ClientLibrary
 import Combine
 import Testing
-@testable import ClientLibrary
 
 @Test func lockedValue() async throws {
     let client = Client()

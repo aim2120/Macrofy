@@ -8,8 +8,8 @@ final class DemoIntegrationTests: Sendable {
 
     @Test func accessingLockedValue() {
         let expectedValue = "Hello, World!"
-        self.value = expectedValue
-        #expect(self.value == expectedValue)
-        #expect(self._value.wrappedValue == expectedValue)
+        value = expectedValue
+        #expect(value == expectedValue)
+        #expect(_value.wrappedValue == expectedValue)
     }
 }
