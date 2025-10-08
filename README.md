@@ -2,6 +2,10 @@
 
 A Swift macro package that automatically generates property-wrapper-equivalent macros from property wrapper types.
 
+## Pronunciation
+
+Macrofy is pronounced "mack-roffee", mack like "back" and "roffee" like coffee.
+
 ## Overview
 
 Macrofy simplifies the creation of property wrapper macros by automatically generating the macro expansion logic for your property wrappers.
@@ -42,7 +46,7 @@ MyWrapper/ # SPM package
 
 Location: `MyWrapperMacroInternal`
 
-> [!NOTE]  
+> [!NOTE]
 > Currently, this must be done in a `macro` target (NOT a library target).
 > In the future, we may aim to allow for the macro to be used in library targets, but this requires further development.
 
@@ -58,7 +62,7 @@ public struct MyWrapper<Value: Sendable>: Sendable {
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue
     }
-    
+
     public let wrappedValue: Value
 }
 
