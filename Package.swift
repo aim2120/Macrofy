@@ -8,10 +8,8 @@ let package = Package(
     name: "Macrofy",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
-        .library(
-            name: "PropertyWrapperMacro",
-            targets: ["PropertyWrapperMacro"]
-        ),
+        .library(name: "Macrofy", targets: ["Macrofy"]),
+        .library(name: "PropertyWrapperMacro", targets: ["PropertyWrapperMacro"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "600.0.0" ..< "700.0.0"),
